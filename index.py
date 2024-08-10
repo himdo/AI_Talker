@@ -60,7 +60,12 @@ ai2 = ai_class.ai(
 
 aiLists = [ai1, ai2]
 
+
 def sendIntroductionToAllAIs():
+    '''
+    This function should only be called once. It is used to introduce all AIs to each other and behave as a starting text.
+    '''
+
     templateMessage = f"Hello All, you are about to begin an adventure. Today you are all gathered as a group of adventures, in your party you have "
     for i in range(len(aiLists)):
         templateMessage += f"\"{aiLists[i].getAI_Name()}\""
@@ -74,6 +79,9 @@ def sendIntroductionToAllAIs():
 recordMicrophone = False
 
 def __translateFile(fileLocation):
+    '''
+    This is purely a helper function. It takes in a file location and spits out the text according to whisper.cpp
+    '''
     payload = {}
     files=[
     ('file',('file.wav',open(fileLocation,'rb'),'audio/wav'))
@@ -83,12 +91,19 @@ def __translateFile(fileLocation):
     return json.loads(response.text)['text']
       
 def __TranslateFilePathAndClean(filepath):
+    '''
+    This is purely a helper function. It takes a file path, sends it to be translated and deletes the file.
+    This also spits out the text into the console and returns the text.
+    '''
     translatedText = __translateFile(filepath)
     os.remove(filepath)
     print(f"{Fore.BLUE}{translatedText}")
     return translatedText
 
 def TranslateFilePathAndSendToLLM(filepath):
+    '''
+    This takes a filepath, translates and cleans it then sends that to all AIs.
+    '''
     text = __TranslateFilePathAndClean(filepath)
     newMessage = {"role":"user", "content":text}
     for i in range(len(aiLists)):
@@ -96,24 +111,43 @@ def TranslateFilePathAndSendToLLM(filepath):
     print(f"{Fore.GREEN} You can now choose who to talk")
 
 def generateAndTalkAI(ai):
+    '''
+    This Requests Ollama to generate text for the given AI.
+    It will then save that message to all AIs.
+    Finally it will generate and play the TTS of the AI.
+
+    This is a primary function that runs.
+    '''
     llmText = sendChatToOllamaAndGetContentOnly(ai)
     
     llmMessage = {"role":"user","content":llmText}
     for i in range(len(aiLists)):
         aiLists[i].addToLLM_Messages(llmMessage)
-    generateTTS(llmText, ai.ai_voice)
+    __generateTTS(llmText, ai.ai_voice)
     print(f"{Fore.GREEN}{ai.getAI_Name()} is done talking.")
 
 def idleChatBetweenAIs():
+    '''
+    Generate and talk as a random AI.
+    '''
     generateAndTalkAI(aiLists[random.randrange(0,len(aiLists))])
 
 def forceAIToTalk(ai_number):
+    '''
+    Forces a specific AI to talk, If the AI does not exist it will print an error to the screen.
+
+    Takes in a Int.
+    '''
     if (ai_number+1) > len(aiLists):
         print(f"{Fore.RED} AI: {ai_number} does not exist")
         return
     generateAndTalkAI(aiLists[ai_number])
 
-def sendChatToOllama(messages):
+def __sendChatToOllama(messages):
+    '''
+    This is a helper function that generates a payload and sends the request to ollama.
+    It takes in all the messages from the AIs and returns new text
+    '''
     payload = json.dumps({
         "model": ollamaModel,
         "messages": messages,
@@ -127,12 +161,22 @@ def sendChatToOllama(messages):
     return response.text
 
 def sendChatToOllamaAndGetContentOnly(ai_reference):
+    '''
+    This informs the user of what the AIs are doing when it is going to ollama.
+    Takes in an AI.
+    Returns a generated response from AI.
+    '''
     print(f"{Fore.GREEN} {ai_reference.getAI_Name()} is thinking")
-    content = json.loads(sendChatToOllama(ai_reference.getLLM_Messages()))['message']['content']
+    content = json.loads(__sendChatToOllama(ai_reference.getLLM_Messages()))['message']['content']
     print(f"{Fore.BLUE} {content}")
     return content
 
-def generateTTS(text, voice):
+def __generateTTS(text, voice):
+    '''
+    This is a helper function that is used for generating and playing an AI message. It also does some small sanitizing to the TTS speech before it gets sent.
+    Takes in the text to get translated, and what voice to use.
+    Returns the response of the TTS service
+    '''
     sanitizedText = re.sub(r'\[.*\] ', '', text)
     payload = f"text_input={urllib.parse.quote(sanitizedText)}&text_filtering=standard&character_voice_gen={voice}&narrator_enabled=false&narrator_voice_gen=male_01.wav&text_not_inside=character&language=en&output_file_name=tempOutput&output_file_timestamp=true&autoplay=true&autoplay_volume=0.8"
     headers = {
@@ -142,6 +186,9 @@ def generateTTS(text, voice):
     return response.text
 
 def deleteLastLLMMessage():
+    '''
+    This is a function that removes the last message sent to all ai's and is useful when things go wrong.
+    '''
     print(f"{Fore.RED} Deleting last LLM Message")
     for i in range(len(aiLists)):
         ai = aiLists[i]
@@ -150,6 +197,9 @@ def deleteLastLLMMessage():
         ai.setLLM_Messages(messages)
 
 def startup():
+    '''
+    This is the startup app.
+    '''
     sendIntroductionToAllAIs()
 
 def on_press(key):
@@ -160,6 +210,9 @@ def on_press(key):
     #     print('special key {0} pressed'.format(key))
 
 def on_release(key):
+    '''
+    This is the main control function for the app. When buttons get released it goes into here and sees if something needs to happen
+    '''
     print('{0} released'.format(key))
     try:
         if key == keyboard.Key.space:
@@ -200,6 +253,9 @@ def on_release(key):
         pass
 
 def prettyPrintLLM_Messages(messages):
+    '''
+    This does some formatting to a list of messages to present the chat history in the terminal
+    '''
     for i in range(len(messages)):
         if messages[i]['role'] == 'system':
             # print(f"{Fore.CYAN}System: \n{messages[i]['content']}\n")
@@ -211,7 +267,15 @@ def prettyPrintLLM_Messages(messages):
 
 startup()
 
-print(f"{Fore.GREEN} Program is Live. Press Space to start and stop recording and CTL-C to end program. Press M to get all messages sent so far")
+print(f"""
+    {Fore.GREEN}Program is Live. 
+    Press {Fore.CYAN}Space{Fore.GREEN} to start and stop recording
+    Press {Fore.CYAN}CTRL-C{Fore.GREEN} to end program.
+    Press {Fore.CYAN}M{Fore.GREEN} to get all messages sent so far
+    Press {Fore.CYAN}1-9{Fore.GREEN} on number row to force trigger to AIs
+    Press {Fore.CYAN}0{Fore.GREEN} to have random ai talk
+    Press {Fore.CYAN}Delete{Fore.GREEN} to delete last message for all AIs
+    """)
 listener = keyboard.Listener(
     on_press=on_press,
     on_release=on_release)
