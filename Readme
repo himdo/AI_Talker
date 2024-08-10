@@ -1,0 +1,14 @@
+### REQUIRED EXTERNAL SOFTWARE:
+
+## Whisper
+This project requires whisper.cpp to be running its server example.
+`./server -m models/ggml-tiny.en.bin`
+Note that the model can be changed to whatever as long it is downloaded.
+
+## Ollama
+this project also requires ollama to be running for it to connect to.
+
+## Some Sort of TTS
+For my testing I am using alltalk as my tts. however it should be able to subsitute it with any tts that is api based
+`./start_alltalk.bat`
+
