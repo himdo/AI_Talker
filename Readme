@@ -9,6 +9,8 @@ Note that the model can be changed to whatever as long it is downloaded.
 this project also requires ollama to be running for it to connect to.
 
 ## Some Sort of TTS
+### alltalk
 For my testing I am using alltalk as my tts. however it should be able to subsitute it with any tts that is api based
 `./start_alltalk.bat`
+#### piper
 

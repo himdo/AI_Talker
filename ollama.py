@@ -1,6 +1,7 @@
 from ais import aiLists
 from constants import ollamaModel, ollamaURL
-from tts import generateTTS
+from tts.tts_piper import generateTTS
+from wav_player import wav_player
 import json
 import requests
 from colorama import Fore
@@ -20,28 +21,29 @@ def sendIntroductionToAllAIs():
     for i in range(len(aiLists)):
         aiLists[i].addToLLM_Messages(message)
 
-def generateAndTalkAI(ai):
+def generateAndTalkAI(ai: object):
     '''
     This Requests Ollama to generate text for the given AI.
     It will then save that message to all AIs.
     Finally it will generate and play the TTS of the AI.
 
     This is a primary function that runs.
+    :param ai: The AI to generate and talk as.
     '''
     llmText = sendChatToOllamaAndGetContentOnly(ai)
     
     llmMessage = {"role":"user","content":llmText}
     for i in range(len(aiLists)):
         aiLists[i].addToLLM_Messages(llmMessage)
-    generateTTS(llmText, ai.ai_voice)
+    wav_player().play_audio(generateTTS(llmText, ai.ai_voice))
     print(f"{Fore.GREEN}{ai.getAI_Name()} is done talking.")
 
 
-def sendChatToOllamaAndGetContentOnly(ai_reference):
+def sendChatToOllamaAndGetContentOnly(ai_reference: object):
     '''
     This informs the user of what the AIs are doing when it is going to ollama.
-    Takes in an AI.
-    Returns a generated response from AI.
+    :param ai_reference: The AI to send to ollama
+    :return: The content of the message from ollama
     '''
     print(f"{Fore.GREEN} {ai_reference.getAI_Name()} is thinking")
     content = json.loads(__sendChatToOllama(ai_reference.getLLM_Messages()))['message']['content']
@@ -49,10 +51,12 @@ def sendChatToOllamaAndGetContentOnly(ai_reference):
     return content
 
 
-def __sendChatToOllama(messages):
+def __sendChatToOllama(messages: list) -> str:
     '''
     This is a helper function that generates a payload and sends the request to ollama.
     It takes in all the messages from the AIs and returns new text
+    :param messages: The list of messages to be sent to ollama
+    :return: The response from ollama
     '''
     payload = json.dumps({
         "model": ollamaModel,

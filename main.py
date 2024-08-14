@@ -4,6 +4,7 @@ from keyboard_keys import listener
 
 from colorama import Fore
 from colorama import init as colorama_init
+from wav_player import wav_player
 colorama_init(autoreset=True)
 
 def startup():
@@ -25,9 +26,6 @@ print(f"""
     Press {Fore.CYAN}0{Fore.GREEN} to have random ai talk
     Press {Fore.CYAN}Delete{Fore.GREEN} to delete last message for all AIs
     """)
-
-
-
 
 while True:
     pass

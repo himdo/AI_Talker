@@ -15,9 +15,10 @@ def deleteLastLLMMessage():
         messages = messages[:-1]
         ai.setLLM_Messages(messages)
 
-def prettyPrintLLM_Messages(messages):
+def prettyPrintLLM_Messages(messages: list):
     '''
     This does some formatting to a list of messages to present the chat history in the terminal
+    :param messages: The list of messages to be formatted
     '''
     for i in range(len(messages)):
         if messages[i]['role'] == 'system':
@@ -34,11 +35,10 @@ def idleChatBetweenAIs():
     '''
     generateAndTalkAI(aiLists[random.randrange(0,len(aiLists))])
 
-def forceAIToTalk(ai_number):
+def forceAIToTalk(ai_number: int):
     '''
     Forces a specific AI to talk, If the AI does not exist it will print an error to the screen.
-
-    Takes in a Int.
+    :param ai_number: The number of the AI to talk
     '''
     if (ai_number+1) > len(aiLists):
         print(f"{Fore.RED} AI: {ai_number} does not exist")

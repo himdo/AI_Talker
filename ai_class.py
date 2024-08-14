@@ -1,9 +1,16 @@
 class ai:
     def __init__ (self,
-                  name,
-                  personality,
-                  background,
-                  ai_voice):
+                  name: str,
+                  personality: str,
+                  background: str,
+                  ai_voice: str):
+        '''
+        Initializes the AI object
+        :param name: The name of the AI
+        :param personality: The personality of the AI
+        :param background: The background of the AI
+        :param ai_voice: The voice of the AI
+        '''
         self.name = name
         self.personality = personality
         self.background = background
@@ -26,17 +33,37 @@ class ai:
         }
         self.llm_messages.append(systemMessage)
 
-    def addToLLM_Messages(self, message):
+    def addToLLM_Messages(self, message: str):
+        '''
+        Adds a message to the list of LLM messages
+        :param message: The message to be added
+        '''
         self.llm_messages.append(message)
 
-    def getLLM_Messages(self):
+    def getLLM_Messages(self) -> list:
+        '''
+        Returns the list of LLM messages
+        :return: The list of LLM messages
+        '''
         return self.llm_messages
     
-    def getAI_Voice(self):
+    def getAI_Voice(self) -> str:
+        '''
+        Returns the voice of the AI
+        :return: The voice of the AI
+        '''
         return self.ai_voice
     
-    def getAI_Name(self):
+    def getAI_Name(self) -> str:
+        '''
+        Returns the name of the AI
+        :return: The name of the AI
+        '''
         return self.name
     
-    def setLLM_Messages(self, messages):
+    def setLLM_Messages(self, messages: list):
+        '''
+        Sets the list of LLM messages
+        :param messages: The list of LLM messages
+        '''
         self.llm_messages = messages

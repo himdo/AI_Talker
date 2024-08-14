@@ -1,9 +1,12 @@
-from colorama import Fore, Style
+from colorama import Fore
 import pyaudio
 import wave
 import uuid
 
 class recorder:
+    '''
+    This is a class that is used to record audio from the microphone.
+    '''
     def __init__(self,
                 CHUNK = 1024,
                 FORMAT = pyaudio.paInt16,
@@ -17,6 +20,9 @@ class recorder:
         self.pa = pyaudio.PyAudio()
     
     def start(self):
+        '''
+        This function starts the recording of the microphone.
+        '''
         if not self.recording:
             self.filelocation = "./whisper/audio_files/{}.wav".format(uuid.uuid4())
             self.wf = wave.open(self.filelocation, 'wb')
@@ -39,7 +45,11 @@ class recorder:
             self.recording = True
             print(f"{Fore.RED}* recording\nPress Space to end recording")
 
-    def stop(self):
+    def stop(self)->str:
+        '''
+        This function stops the recording of the microphone.
+        :return: The file location of the recorded audio
+        '''
         if self.recording:
             self.stream.stop_stream()
             self.stream.close()

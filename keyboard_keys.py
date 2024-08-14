@@ -8,16 +8,17 @@ from pynput import keyboard
 r = recorder.recorder()
 recordMicrophone = False
 
-def on_press(key):
+def on_press(key: keyboard.Key):
     pass
     # try:
     #     print('alphanumeric key {0} pressed'.format(key.char))
     # except AttributeError:
     #     print('special key {0} pressed'.format(key))
 
-def on_release(key):
+def on_release(key: keyboard.Key):
     '''
     This is the main control function for the app. When buttons get released it goes into here and sees if something needs to happen
+    :param key: The key that was released
     '''
     print('{0} released'.format(key))
     try:

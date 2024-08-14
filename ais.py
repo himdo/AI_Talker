@@ -15,7 +15,7 @@ ai1 = ai_class.ai(
     John’s one true weakness is his insatiable curiosity, which often gets him into sticky situations (literally, in the case of his encounter with the Slime King of Gloop). He’s always on the lookout for the next adventure, be it a treasure hunt on a forgotten asteroid or a rodeo in zero gravity. To John, the universe is just one big playground, and he’s determined to swing on every star and slide down every comet.
     In summary, John, the Cowboy, is a rootin’-tootin’, space-ridin’ adventurer with a heart as big as the Milky Way, a sense of humor that can outshine any supernova, and a determination to save his planet from a squishy fate—one wild adventure at a time.
     """,
-    "male_03.wav")
+    "en_US-ryan-low.onnx")
 
 ai2 = ai_class.ai(
     "Ziggy Whirlwind",
@@ -32,7 +32,7 @@ ai2 = ai_class.ai(
 
     In essence, Ziggy Whirlwind is a force of nature—unpredictable, unstoppable, and utterly unforgettable.
     """,
-    "female_04.wav")
+    "en_US-ljspeech-high.onnx")
 
 
 aiLists = [ai1, ai2]
