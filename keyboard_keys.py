@@ -56,9 +56,12 @@ def on_release(key: keyboard.Key):
             forceAIToTalk(7)
         elif key.char == '9':
             forceAIToTalk(8)
-    except:
+    except AttributeError as e:
+        # We don't care about this error
         pass
-
+    except Exception as e:
+        print(f"Error: {e}")
+        pass
 
 listener = keyboard.Listener(
     on_press=on_press,

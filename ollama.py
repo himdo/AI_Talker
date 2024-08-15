@@ -58,15 +58,19 @@ def __sendChatToOllama(messages: list) -> str:
     :param messages: The list of messages to be sent to ollama
     :return: The response from ollama
     '''
-    payload = json.dumps({
-        "model": ollamaModel,
-        "messages": messages,
-        "stream": False
-    })
-    headers = {
-    'Content-Type': 'application/json'
-    }
-    print(f"{Fore.GREEN}Starting request to ollama")
-    response = requests.request("POST", ollamaURL, headers=headers, data=payload)
-    return response.text
+    try:
+        payload = json.dumps({
+            "model": ollamaModel,
+            "messages": messages,
+            "stream": False
+        })
+        headers = {
+        'Content-Type': 'application/json'
+        }
+        print(f"{Fore.GREEN}Starting request to ollama")
+        response = requests.request("POST", ollamaURL, headers=headers, data=payload)
+        return response.text
+    except Exception as e:
+        print(f"{Fore.RED} Error: {e}")
+        return json.dumps({"message": {"content": "Ollama is down"}})
 
